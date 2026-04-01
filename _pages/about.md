@@ -6,7 +6,7 @@ subtitle: Robotics & ML Engineer
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image:
   image_circular: true
   more_info:
 
