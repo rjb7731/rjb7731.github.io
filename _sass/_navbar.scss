@@ -57,6 +57,23 @@
 
   .navbar-brand {
     color: var(--global-text-color);
+
+    .logo-first {
+      font-weight: 300;
+      letter-spacing: 0.04em;
+    }
+
+    .logo-sep {
+      margin: 0 0.3em;
+      font-weight: 300;
+      opacity: 0.35;
+      font-size: 0.8em;
+    }
+
+    .logo-last {
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
   }
 
   .navbar-nav .nav-item .nav-link {
