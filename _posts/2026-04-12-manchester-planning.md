@@ -4,9 +4,6 @@ title: "Training a 49-Million-Parameter Model to Match Planning Docs to OS Maps"
 date: 2026-04-11 12:00:00
 description: "Matching planning documents to the entirety of Greater Manchester using contrastive learning and synthetic data."
 tags: machine-learning computer-vision mapping sovereign-ai
-categories: tech-projects
-giscus_comments: true
-related_posts: false
 ---
 
 **Training a single 49-million-parameter model to match planning documents to OS Maps for the entirety of Greater Manchester!**
