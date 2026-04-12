@@ -8,7 +8,7 @@ tags: [robotics, world-models, deep-learning]
 
 ## What is a World Model?
 
-A world model is a neural network that learns to predict _what the world will look like next_ given a current observation and an action. Instead of directly learning a policy (what action to take), you first learn the dynamics of the environment — then you can plan, imagine counterfactuals, and reason about consequences.
+A world model is a neural network that learns to predict _what the world will look like next_ given a current observation and an action. Instead of directly learning a policy (what action to take), you first learn the dynamics of the environment and then you can plan, imagine counterfactuals, and reason about consequences.
 
 This is the core idea behind [GAIA-1](https://wayve.ai/thinking/scaling-gaia-1/) from Wayve, which does this for autonomous driving at scale. I wanted to build something similar for indoor robot navigation. Wayve as a company I think we should be really proud of in the UK, originally starting in Cambridge they are now leading the way with autonomous vehicles and their cars are on our roads in the UK today. Home robotics is an area ripe with research and investment and is one area we are seeing huge advancements. 
 
@@ -36,7 +36,7 @@ The pipeline has two stages:
 
 **Stage 2 — GAIA Transformer**: A causal GPT-style transformer trained on sequences of `[frame_tokens, action, frame_tokens, action, ...]`. Given N context frames and an action, it predicts the next frame's tokens autoregressively. The transformer here is trained on the trajectories of these compressed latent representations of my home and learns how to recreate these latents frame by frame so when I feed the latent back into the decoder portion of my above mentioned VQ-VAE it should be able to build the images back up!
 
-You could say I am creating a mini world model of my own home here....we have Wayve at home!
+You could say I am creating a mini 'world' model of my own home here....we have Wayve at home!
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
@@ -49,7 +49,7 @@ You could say I am creating a mini world model of my own home here....we have Wa
 
 ## Results
 
-The model learned real spatial structure from trajectory data alone — no 3D supervision, no depth sensors. Applying TURN_LEFT causes the scene to pan right; applying TURN_RIGHT enough steps eventually reveals a completely different part of the room.
+The model learned real spatial structure from trajectory data alone there is no 3D supervision, no depth sensors. Applying TURN_LEFT causes the scene to pan right; applying TURN_RIGHT enough steps eventually reveals a completely different part of the room.
 
 Most impressively, the model maintains "object permanence." If it pans away from the couch and then turns back, the couch reappears in the correct relative position. It hasn't just learned a video loop; it has internalized the room's geometry.
 
