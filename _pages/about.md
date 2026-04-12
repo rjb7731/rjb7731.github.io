@@ -6,7 +6,7 @@ subtitle: Deep Learning Enthusiast
 
 profile:
   align: right
-  image:
+  image: false
   image_circular: true
   more_info:
 
