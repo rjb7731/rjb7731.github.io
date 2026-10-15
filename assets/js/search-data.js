@@ -16,9 +16,9 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/blog/";
           },
-        },{id: "post-geolocating-planning-documents-with-agents-and-reinforcement-learning",
+        },{id: "post-beyond-static-embeddings-training-a-6-000-parameter-rl-agent-to-actively-hunt-down-historical-planning-maps",
         
-          title: "Geolocating Planning documents with Agents and Reinforcement Learning",
+          title: "Beyond Static Embeddings: Training a 6,000-Parameter RL Agent to Actively Hunt Down Historical...",
         
         description: "Matching planning documents to the entirety of Greater Manchester using tiny models and reinforcemment learning",
         section: "Posts",
