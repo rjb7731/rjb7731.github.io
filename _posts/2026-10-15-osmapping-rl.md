@@ -109,7 +109,7 @@ Warm-starting with Behavior Cloning (`SFT`) places the policy into the region of
 
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/agent_search_v2.gif" title="Agent Search in Action" class="img-fluid rounded z-depth-1" %}
+    {% include figure.liquid path="assets/img/agent_search_v2.png" title="Agent Search in Action" class="img-fluid rounded z-depth-1" %}
   </div>
 </div>
 
