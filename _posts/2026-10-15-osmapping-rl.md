@@ -13,14 +13,16 @@ tags: machine-learning computer-vision mapping sovereign-ai reinforcement-learni
 
 _Why throw a huge LLM or brute-force grid search at a spatial business problem when you can frame it as a Markov Decision Process (MDP) and solve it in milliseconds with a tiny policy network in pure NumPy?_
 
-```html
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
     {% include figure.liquid path="assets/img/agent_search.gif" title="Agent Search in Action" class="img-fluid rounded z-depth-1" %}
   </div>
 </div>
-<div class="caption">Figure 2: The agent actively searches the map to locate the correct property.</div>
-```
+<div class="caption">
+  Figure 1: Our 6,000-parameter Decision Encoder actively exploring real Ordnance Survey geometry in Trafford. Starting from a rough street-level geocode (blue cross), it zooms out, spots a candidate peak across the neighbourhood, flies over, zooms in to verify, and commits to the exact Land Registry plot (green).
+</div>
+
+---
 
 _Figure 1: Our 6,000-parameter Decision Encoder actively exploring real Ordnance Survey geometry in Trafford. Starting from a rough street-level geocode (blue cross), it zooms out, spots a candidate peak across the neighbourhood, flies over, zooms in to verify, and commits to the exact Land Registry plot (green)._
 
@@ -131,7 +133,7 @@ I trained the system on 1,200 plans in one 2.4km $\times$ 2.4km area of Trafford
 | **Pure SFT** (Behavior Cloning)   | 59.0%            | 2.5%               | 38.5%     | 8.2       | 95.9%     | `+0.265`     |
 | **SFT + RL (REINFORCE)**          | **76.2%**        | **7.0%**           | **16.8%** | **5.2**   | **91.6%** | **`+0.548`** |
 
-_Paired 95% bootstrap confidence interval of **SFT + RL** over the best hand-written baseline (`coarse_to_fine`): **Reward `+0.193` `[+0.126, +0.254]**`, **Correct `+10.5%` `[+6.5%, +14.2%]**`, while taking **1.5 fewer looks\*\* per plan._
+_Paired 95% bootstrap confidence interval of **SFT + RL** over the best hand-written baseline (`coarse_to_fine`): \**Reward `+0.193` `[+0.126, +0.254]**`, \**Correct `+10.5%` `[+6.5%, +14.2%]**`, while taking \**1.5 fewer looks\*\* per plan._
 
 ### Where RL Crushes Rules: Hand-Drawn & Historical Plans (`hand` style)
 
