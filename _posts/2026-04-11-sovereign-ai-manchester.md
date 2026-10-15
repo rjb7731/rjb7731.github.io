@@ -9,6 +9,7 @@ tags: machine-learning computer-vision mapping sovereign-ai
 **Training a single 49-million-parameter model to match planning documents to Ordnance Survey Maps for the entirety of Greater Manchester!**
 
 > ### 🚀 Live Interactive Demo
+>
 > I have deployed the model to a public Hugging Face Space. You can test the 3,478-tile scale test in real-time here:  
 > **[Greater Manchester Map Matcher Live Dashboard](https://huggingface.co/spaces/ryanbrady773/greater-manchester-map-matcher)**
 
@@ -103,7 +104,7 @@ Scaling to all of Greater Manchester—**3,478 tiles** covering a 30km × 30km a
 
 The model correctly identifies the exact 1km square more than half the time, and the correct location is in the top 5 guesses four-fifths of the time across a major metropolitan area. This is achieved with completely different rendering styles between the planning documents and reference tiles.
 
-For context, this is achieved with less than one training example per tile. The model is genuinely learning spatial features, not memorizing. Its learning to ignore the noise contained in planning documents and focus on the map portion of the page for visual clues. 
+For context, this is achieved with less than one training example per tile. The model is genuinely learning spatial features, not memorizing. Its learning to ignore the noise contained in planning documents and focus on the map portion of the page for visual clues.
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
@@ -122,4 +123,4 @@ The big takeaway here is the synthetic data pipeline. The ability to generate un
 
 For councils with backlogs of modern planning documents, a tool that takes a scanned plan and says "this is located here" could be built, trained, and deployed locally for effectively zero cost. No API subscriptions, no cloud dependencies, and no per-document charges.
 
-As the model is a lean 49 million parameters, it doesn't require a high-end GPU for deployment either. In fact, the entire inference engine and the database of Manchester’s spatial fingerprints could run on a Raspberry Pi. This makes 'Sovereign AI' a reality for local government: high-performance geolocation that is offline, private, and runs on cheap & small hardware. 
+As the model is a lean 49 million parameters, it doesn't require a high-end GPU for deployment either. In fact, the entire inference engine and the database of Manchester’s spatial fingerprints could run on a Raspberry Pi. This makes 'Sovereign AI' a reality for local government: high-performance geolocation that is offline, private, and runs on cheap & small hardware.

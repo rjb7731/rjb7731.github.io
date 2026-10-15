@@ -10,7 +10,7 @@ tags: [robotics, world-models, deep-learning]
 
 A world model is a neural network that learns to predict _what the world will look like next_ given a current observation and an action. Instead of directly learning a policy (what action to take), you first learn the dynamics of the environment and then you can plan, imagine counterfactuals, and reason about consequences.
 
-This is the core idea behind [GAIA-1](https://wayve.ai/thinking/scaling-gaia-1/) from Wayve, which does this for autonomous driving at scale. I wanted to build something similar for indoor robot navigation. Wayve as a company I think we should be really proud of in the UK, originally starting in Cambridge they are now leading the way with autonomous vehicles and their cars are on our roads in the UK today. Home robotics is an area ripe with research and investment and is one area we are seeing huge advancements. 
+This is the core idea behind [GAIA-1](https://wayve.ai/thinking/scaling-gaia-1/) from Wayve, which does this for autonomous driving at scale. I wanted to build something similar for indoor robot navigation. Wayve as a company I think we should be really proud of in the UK, originally starting in Cambridge they are now leading the way with autonomous vehicles and their cars are on our roads in the UK today. Home robotics is an area ripe with research and investment and is one area we are seeing huge advancements.
 
 The best way to achieve my aim here and learn, as always, is to get hands on and try and solve a problem after all "What I cannot create, I do not understand" - Feynman.
 
@@ -18,7 +18,7 @@ The best way to achieve my aim here and learn, as always, is to get hands on and
 
 First things first I set about buying and building a raspberry PI controlled car. This would work as my data collection engine and through tele-operation, I would collect information about my home. It collects data in RGB frames at ~10fps paired with motor commands (left/right wheel speeds). Each trajectory is a few hundred frames of the robot navigating through rooms.
 
-Did some tinkering and got the rig together, I then was able to SSH into the car and upload some .py files for it to take commands and send visuals from its camera back using pyzmq. 
+Did some tinkering and got the rig together, I then was able to SSH into the car and upload some .py files for it to take commands and send visuals from its camera back using pyzmq.
 
 <div class="row justify-content-center">
     <div class="col-sm-8 col-md-6 mt-3 mt-md-0">
@@ -28,7 +28,6 @@ Did some tinkering and got the rig together, I then was able to SSH into the car
 <div class="caption text-center">
     Figure 1: PI car after finishing the build.
 </div>
-
 
 The pipeline has two stages:
 
