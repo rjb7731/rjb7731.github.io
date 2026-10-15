@@ -16,15 +16,17 @@ _Why throw a huge LLM or brute-force grid search at a spatial business problem w
     {% include figure.liquid path="assets/img/agent_search.gif" title="Agent Search in Action" class="img-fluid rounded z-depth-1" %}
   </div>
 </div>
+
 <div class="caption">
   Figure 1: Our 6,000-parameter Decision Encoder actively exploring real Ordnance Survey geometry in Trafford. Starting from a rough street-level geocode (blue cross), it zooms out, spots a candidate peak across the neighbourhood, flies over, zooms in to verify, and commits to the exact Land Registry plot (green).
 </div>
 
----
+<div class="row">
+  <div class="col-sm mt-3 mt-md-0">
+    {% include figure.liquid path="assets/img/agent_search_v0.gif" title="Agent Search in Action" class="img-fluid rounded z-depth-1" %}
+  </div>
+</div>
 
-_Figure 1: Our 6,000-parameter Decision Encoder actively exploring real Ordnance Survey geometry in Trafford. Starting from a rough street-level geocode (blue cross), it zooms out, spots a candidate peak across the neighbourhood, flies over, zooms in to verify, and commits to the exact Land Registry plot (green)._
-
----
 
 Back in April, I wrote about training a 49-million-parameter contrastive ResNet50 model to geolocate planning documents across Greater Manchester. That approach treated map localization like a giant one-shot classification problem: chop Greater Manchester into 3,478 reference tiles, embed the document, run a matrix multiplication, and hope the nearest tile embedding is the right one.
 
