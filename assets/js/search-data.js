@@ -16,7 +16,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/blog/";
           },
-        },{id: "post-sovereign-ai-for-greater-manchester-geolocating-20-years-of-planning-docs-with-edge-ready-models",
+        },{id: "post-geolocating-planning-documents-with-agents-and-reinforcement-learning",
+        
+          title: "Geolocating Planning documents with Agents and Reinforcement Learning",
+        
+        description: "Matching planning documents to the entirety of Greater Manchester using tiny models and reinforcemment learning",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/osmapping-rl/";
+          
+        },
+      },{id: "post-sovereign-ai-for-greater-manchester-geolocating-20-years-of-planning-docs-with-edge-ready-models",
         
           title: "Sovereign AI for Greater Manchester: Geolocating 20 Years of Planning Docs with Edge-Ready...",
         
