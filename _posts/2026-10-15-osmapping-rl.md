@@ -6,26 +6,23 @@ description: "Matching planning documents to the entirety of Greater Manchester 
 tags: machine-learning computer-vision mapping sovereign-ai reinforcement-learning
 ---
 
-
 # Beyond Static Embeddings: Training a 6,000-Parameter RL Agent to Actively Hunt Down Historical Planning Maps
 
 **Created on October 15, 2026**
 `2026` · `reinforcement-learning` · `markov-decision-processes` · `computer-vision` · `sovereign-ai`
 
-*Why throw a huge LLM or brute-force grid search at a spatial business problem when you can frame it as a Markov Decision Process (MDP) and solve it in milliseconds with a tiny policy network in pure NumPy?*
+_Why throw a huge LLM or brute-force grid search at a spatial business problem when you can frame it as a Markov Decision Process (MDP) and solve it in milliseconds with a tiny policy network in pure NumPy?_
 
 ```html
 <div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/agent_search.gif" title="Agent Search in Action" class="img-fluid rounded z-depth-1" %}
-    </div>
+  <div class="col-sm mt-3 mt-md-0">
+    {% include figure.liquid path="assets/img/agent_search.gif" title="Agent Search in Action" class="img-fluid rounded z-depth-1" %}
+  </div>
 </div>
-<div class="caption">
-    Figure 2: The agent actively searches the map to locate the correct property.
-</div>
+<div class="caption">Figure 2: The agent actively searches the map to locate the correct property.</div>
 ```
 
-*Figure 1: Our 6,000-parameter Decision Encoder actively exploring real Ordnance Survey geometry in Trafford. Starting from a rough street-level geocode (blue cross), it zooms out, spots a candidate peak across the neighbourhood, flies over, zooms in to verify, and commits to the exact Land Registry plot (green).*
+_Figure 1: Our 6,000-parameter Decision Encoder actively exploring real Ordnance Survey geometry in Trafford. Starting from a rough street-level geocode (blue cross), it zooms out, spots a candidate peak across the neighbourhood, flies over, zooms in to verify, and commits to the exact Land Registry plot (green)._
 
 ---
 
@@ -57,28 +54,28 @@ Lets be honest modern digital plans are easy. The real headache for councils is 
 
 On top of visual degradation, the starting address prior is often unreliable:
 
-* **UPRN (45%):** Near the property, though 12% of the time it geocodes to the wrong house up to 200m away.
-* **Postcode (25%):** Anywhere within a 100m to 350m radius of the site.
-* **Street (15%):** Dropped at a random midpoint along the named road.
-* **None (15%):** Dropped at a completely random coordinate in a 2.4km $\times$ 2.4km town.
+- **UPRN (45%):** Near the property, though 12% of the time it geocodes to the wrong house up to 200m away.
+- **Postcode (25%):** Anywhere within a 100m to 350m radius of the site.
+- **Street (15%):** Dropped at a random midpoint along the named road.
+- **None (15%):** Dropped at a completely random coordinate in a 2.4km $\times$ 2.4km town.
 
 ### The Action Space (17 Discrete Decisions)
 
 At each step (up to a budget of 16 looks), the agent views a local crop of the map through a fast Normalized Cross-Correlation (NCC) template matcher and chooses from 17 actions:
 
-* **Navigate:** `pan_N`, `pan_E`, `pan_S`, `pan_W`, `zoom_in`, `zoom_out` (switching between 960m coarse, 480m medium, and 240m fine viewports), or `goto_peak` (center on the highest correlation peak in the current view).
-* **Investigate Rivals:** The environment keeps a short-term memory of the top 3 distinct match locations seen so far. Picking `check_0`, `check_1`, or `check_2` jumps straight to that candidate at the finest zoom level to verify it.
-* **Gather Clues & Test Hypotheses:** `read_street` runs OCR on the plan to unlock street jump candidates (`jump_0..2`), while `switch_scale` flips the agent's scale hypothesis between `1:1250` and `1:2500` (since 25% of plans have misread or missing scale text).
-* **Terminal Actions (`commit` vs. `escalate`):** Committing runs a sub-pixel registration and checks if the plan's red boundary polygon overlaps the true Land Registry plot ($\text{IoU} \ge 0.5$). Escalating stops the search and flags the document for human review.
+- **Navigate:** `pan_N`, `pan_E`, `pan_S`, `pan_W`, `zoom_in`, `zoom_out` (switching between 960m coarse, 480m medium, and 240m fine viewports), or `goto_peak` (center on the highest correlation peak in the current view).
+- **Investigate Rivals:** The environment keeps a short-term memory of the top 3 distinct match locations seen so far. Picking `check_0`, `check_1`, or `check_2` jumps straight to that candidate at the finest zoom level to verify it.
+- **Gather Clues & Test Hypotheses:** `read_street` runs OCR on the plan to unlock street jump candidates (`jump_0..2`), while `switch_scale` flips the agent's scale hypothesis between `1:1250` and `1:2500` (since 25% of plans have misread or missing scale text).
+- **Terminal Actions (`commit` vs. `escalate`):** Committing runs a sub-pixel registration and checks if the plan's red boundary polygon overlaps the true Land Registry plot ($\text{IoU} \ge 0.5$). Escalating stops the search and flags the document for human review.
 
 ### Encoding Operational Economics in the Reward Function
 
 Why use RL instead of a simple threshold? Because business workflows have asymmetric costs:
 
-* **Each step/look (`-0.02`):** Compute and latency budget. Looking at 50 windows is expensive.
-* **Correct commit (`+1.0`):** Automated throughput.
-* **Wrong commit (`-1.0`):** A false positive in a statutory register is a costly failure.
-* **Escalate (`-0.35`):** Passing a tough document to a human costs time, but is far preferable to recording a wrong location.
+- **Each step/look (`-0.02`):** Compute and latency budget. Looking at 50 windows is expensive.
+- **Correct commit (`+1.0`):** Automated throughput.
+- **Wrong commit (`-1.0`):** A false positive in a statutory register is a costly failure.
+- **Escalate (`-0.35`):** Passing a tough document to a human costs time, but is far preferable to recording a wrong location.
 
 ---
 
@@ -86,12 +83,12 @@ Why use RL instead of a simple threshold? Because business workflows have asymme
 
 Does the RL policy need to be a massive Vision Transformer? **No.**
 
-The template matcher already turns image comparisons into spatial correlation surfaces. What the agent actually needs is a **sequential decision policy** that looks at the *summary statistics* of the search so far and decides what to do next.
+The template matcher already turns image comparisons into spatial correlation surfaces. What the agent actually needs is a **sequential decision policy** that looks at the _summary statistics_ of the search so far and decides what to do next.
 
 I built a `DecisionEncoder` in pure NumPy—a two-layer, 64-unit `tanh` Multi-Layer Perceptron (MLP) with a companion Value Network baseline:
 
-* At each step, it takes a 48-dimensional global situation vector $G$ (current zoom, remaining step budget, current peak score, peak distinctiveness over the runner-up, distance from the geocode, scale state, and the score lead of the top remembered candidates) concatenated with a 21-dimensional per-action feature vector $A[a]$.
-* Because it operates on structured state-action features `[situation; option]`, the entire policy network is roughly **6,000 parameters**, runs in microseconds on a CPU, and requires zero deep learning frameworks.
+- At each step, it takes a 48-dimensional global situation vector $G$ (current zoom, remaining step budget, current peak score, peak distinctiveness over the runner-up, distance from the geocode, scale state, and the score lead of the top remembered candidates) concatenated with a 21-dimensional per-action feature vector $A[a]$.
+- Because it operates on structured state-action features `[situation; option]`, the entire policy network is roughly **6,000 parameters**, runs in microseconds on a CPU, and requires zero deep learning frameworks.
 
 ---
 
@@ -116,8 +113,7 @@ In our experiments, a randomly initialized agent wanders around the map and make
 
 Warm-starting with Behavior Cloning (`SFT`) places the policy into the region of state space where it actually finds maps, and **REINFORCE (`SFT+RL`)** then refines its decision boundaries far beyond the expert it copied.
 
-
-*Figure 2: Step-by-step filmstrip of the SFT+RL agent locating a degraded hand-drawn plan (`hand` style, where buildings have changed since the plan was drawn). Each panel shows the agent's local viewport crop, the matcher peak (orange crosshair), and the Decision Encoder's live action probability distribution.*
+_Figure 2: Step-by-step filmstrip of the SFT+RL agent locating a degraded hand-drawn plan (`hand` style, where buildings have changed since the plan was drawn). Each panel shows the agent's local viewport crop, the matcher peak (orange crosshair), and the Decision Encoder's live action probability distribution._
 
 ---
 
@@ -125,36 +121,36 @@ Warm-starting with Behavior Cloning (`SFT`) places the policy into the region of
 
 I trained the system on 1,200 plans in one 2.4km $\times$ 2.4km area of Trafford (`BNG 374000, 393000`) and evaluated every method on the exact same 400 unseen test episodes in a separate 2.4km $\times$ 2.4km town (`BNG 377000, 391000`).
 
-| Method | Correct (Recall) | Wrong (Bad Commit) | Escalate | Avg Looks | Precision | Total Reward |
-| --- | --- | --- | --- | --- | --- | --- |
-| **Geocode Commit** (no search) | 32.8% | 17.0% | 50.2% | 1.0 | 65.8% | `-0.018` |
-| **Exhaustive Grid** (1 scale) | 29.5% | 1.3% | 69.3% | 26.0 | 95.9% | `-0.460` |
-| **Exhaustive Grid** (both scales) | 30.0% | 1.8% | 68.2% | 51.0 | 94.5% | `-0.956` |
-| **Coarse-to-Fine** (heuristic) | 65.7% | 5.2% | 29.0% | 6.7 | 92.6% | `+0.355` |
-| **Smart Expert** (heuristic) | 58.5% | 2.5% | 39.0% | 8.3 | 95.9% | `+0.267` |
-| **Pure SFT** (Behavior Cloning) | 59.0% | 2.5% | 38.5% | 8.2 | 95.9% | `+0.265` |
-| **SFT + RL (REINFORCE)** | **76.2%** | **7.0%** | **16.8%** | **5.2** | **91.6%** | **`+0.548`** |
+| Method                            | Correct (Recall) | Wrong (Bad Commit) | Escalate  | Avg Looks | Precision | Total Reward |
+| --------------------------------- | ---------------- | ------------------ | --------- | --------- | --------- | ------------ |
+| **Geocode Commit** (no search)    | 32.8%            | 17.0%              | 50.2%     | 1.0       | 65.8%     | `-0.018`     |
+| **Exhaustive Grid** (1 scale)     | 29.5%            | 1.3%               | 69.3%     | 26.0      | 95.9%     | `-0.460`     |
+| **Exhaustive Grid** (both scales) | 30.0%            | 1.8%               | 68.2%     | 51.0      | 94.5%     | `-0.956`     |
+| **Coarse-to-Fine** (heuristic)    | 65.7%            | 5.2%               | 29.0%     | 6.7       | 92.6%     | `+0.355`     |
+| **Smart Expert** (heuristic)      | 58.5%            | 2.5%               | 39.0%     | 8.3       | 95.9%     | `+0.267`     |
+| **Pure SFT** (Behavior Cloning)   | 59.0%            | 2.5%               | 38.5%     | 8.2       | 95.9%     | `+0.265`     |
+| **SFT + RL (REINFORCE)**          | **76.2%**        | **7.0%**           | **16.8%** | **5.2**   | **91.6%** | **`+0.548`** |
 
-*Paired 95% bootstrap confidence interval of **SFT + RL** over the best hand-written baseline (`coarse_to_fine`): **Reward `+0.193` `[+0.126, +0.254]**`, **Correct `+10.5%` `[+6.5%, +14.2%]**`, while taking **1.5 fewer looks** per plan.*
+_Paired 95% bootstrap confidence interval of **SFT + RL** over the best hand-written baseline (`coarse_to_fine`): **Reward `+0.193` `[+0.126, +0.254]**`, **Correct `+10.5%` `[+6.5%, +14.2%]**`, while taking **1.5 fewer looks\*\* per plan._
 
 ### Where RL Crushes Rules: Hand-Drawn & Historical Plans (`hand` style)
 
 When we break down the results by plan style and starting address quality, we see why learned sequential policies beat hand-tuned thresholds:
 
-| Subset | Coarse-to-Fine | Smart Expert | Pure SFT (Cloned) | **SFT + RL (Ours)** |
-| --- | --- | --- | --- | --- |
-| **Hand-Drawn + Demolished Buildings (`hand`)** | 66% *(7.0 steps)* | 60% *(8.4 steps)* | 56% *(8.8 steps)* | **78% *(5.3 steps, 92% prec)*** |
-| **Modern Colour (`os_colour`)** | 65% *(6.6 steps)* | 55% *(8.6 steps)* | 59% *(8.0 steps)* | **78% *(4.9 steps, 89% prec)*** |
-| **Modern Monochrome (`os_mono`)** | 66% *(6.6 steps)* | 60% *(8.1 steps)* | 60% *(7.9 steps)* | **75% *(5.3 steps, 92% prec)*** |
-| **Exact / Near Address (`uprn`)** | 81% *(4.6 steps)* | 70% *(6.4 steps)* | 70% *(6.3 steps)* | **91% *(3.1 steps, 94% prec)*** |
-| **Postcode Only (100–350m off)** | 64% *(7.0 steps)* | 55% *(8.8 steps)* | 57% *(8.4 steps)* | **83% *(5.5 steps, 91% prec)*** |
-| **Standard `1:1250` Plans** | 71% *(6.2 steps)* | 65% *(7.5 steps)* | 66% *(7.4 steps)* | **81% *(5.0 steps, 96% prec)*** |
+| Subset                                         | Coarse-to-Fine    | Smart Expert      | Pure SFT (Cloned) | **SFT + RL (Ours)**             |
+| ---------------------------------------------- | ----------------- | ----------------- | ----------------- | ------------------------------- |
+| **Hand-Drawn + Demolished Buildings (`hand`)** | 66% _(7.0 steps)_ | 60% _(8.4 steps)_ | 56% _(8.8 steps)_ | **78% _(5.3 steps, 92% prec)_** |
+| **Modern Colour (`os_colour`)**                | 65% _(6.6 steps)_ | 55% _(8.6 steps)_ | 59% _(8.0 steps)_ | **78% _(4.9 steps, 89% prec)_** |
+| **Modern Monochrome (`os_mono`)**              | 66% _(6.6 steps)_ | 60% _(8.1 steps)_ | 60% _(7.9 steps)_ | **75% _(5.3 steps, 92% prec)_** |
+| **Exact / Near Address (`uprn`)**              | 81% _(4.6 steps)_ | 70% _(6.4 steps)_ | 70% _(6.3 steps)_ | **91% _(3.1 steps, 94% prec)_** |
+| **Postcode Only (100–350m off)**               | 64% _(7.0 steps)_ | 55% _(8.8 steps)_ | 57% _(8.4 steps)_ | **83% _(5.5 steps, 91% prec)_** |
+| **Standard `1:1250` Plans**                    | 71% _(6.2 steps)_ | 65% _(7.5 steps)_ | 66% _(7.4 steps)_ | **81% _(5.0 steps, 96% prec)_** |
 
 Look at what happened between **Pure SFT (`59.0%` overall, `56%` on hand-drawn)** and **SFT + RL (`76.2%` overall, `78%` on hand-drawn)**:
 
-* The hand-written `smart_expert` was tuned to be cautious (`95.9%` precision), which caused it to second-guess itself on degraded hand-drawn plans—burning **8.4 steps** checking rival peaks and escalating 40% of the time.
-* Pure Behavior Cloning (`sft_decision_encoder`) faithfully copied that hesitation (`56%` correct in `8.8` steps).
-* Once unleashed with **REINFORCE**, the policy discovered that it didn't need a rigid correlation threshold. By combining the current peak score, local distinctiveness (`score - second`), and the lead over remembered candidates in `obs()`, **SFT + RL boosted recall on hand-drawn historical plans by +22% over the cloned expert (`56%` $\rightarrow$ `78%`) while cutting search time from 8.8 steps down to 5.3 steps!**
+- The hand-written `smart_expert` was tuned to be cautious (`95.9%` precision), which caused it to second-guess itself on degraded hand-drawn plans—burning **8.4 steps** checking rival peaks and escalating 40% of the time.
+- Pure Behavior Cloning (`sft_decision_encoder`) faithfully copied that hesitation (`56%` correct in `8.8` steps).
+- Once unleashed with **REINFORCE**, the policy discovered that it didn't need a rigid correlation threshold. By combining the current peak score, local distinctiveness (`score - second`), and the lead over remembered candidates in `obs()`, **SFT + RL boosted recall on hand-drawn historical plans by +22% over the cloned expert (`56%` $\rightarrow$ `78%`) while cutting search time from 8.8 steps down to 5.3 steps!**
 
 ---
 
