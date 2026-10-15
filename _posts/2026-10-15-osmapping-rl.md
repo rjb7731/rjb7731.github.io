@@ -35,7 +35,7 @@ It worked well as a proof of concept, but as I dug deeper into real-world counci
 When a human caseworker—or an intelligent system—tries to locate a messy, historical planning document on a map, they don’t take a single glance at the entire city and guess. They **investigate**:
 
 1. They start at a rough clue (an address, a postcode, or a street name).
-2. They look around at a medium zoom[cite: 1, 7]. If the street layout doesn't match, they **zoom out** to get their bearings.
+2. They look around at a medium zoom. If the street layout doesn't match, they **zoom out** to get their bearings.
 3. If the title block says `Scale 1:1250`but nothing lines up, they suspect the OCR or title block is wrong and **test a `1:2500` scale hypothesis**.
 4. In repetitive suburban estates where three cul-de-sacs look almost identical, they **jump between rival candidates** at fine resolution to compare them side by side.
 5. Most importantly, if the scan is too degraded or ambiguous, they **know when to escalate to a human** rather than corrupting the database with a bad guess.
@@ -106,7 +106,16 @@ In our experiments, a randomly initialized agent wanders around the map and make
 
 Warm-starting with Behavior Cloning (`SFT`) places the policy into the region of state space where it actually finds maps, and **REINFORCE (`SFT+RL`)** then refines its decision boundaries far beyond the expert it copied.
 
-_Figure 2: Step-by-step filmstrip of the SFT+RL agent locating a degraded hand-drawn plan (`hand` style, where buildings have changed since the plan was drawn). Each panel shows the agent's local viewport crop, the matcher peak (orange crosshair), and the Decision Encoder's live action probability distribution._
+
+<div class="row">
+  <div class="col-sm mt-3 mt-md-0">
+    {% include figure.liquid path="assets/img/agent_search_v2.gif" title="Agent Search in Action" class="img-fluid rounded z-depth-1" %}
+  </div>
+</div>
+
+<div class="caption">
+  Figure 2: Step-by-step filmstrip of the SFT+RL agent locating a degraded hand-drawn plan (`hand` style, where buildings have changed since the plan was drawn). Each panel shows the agent's local viewport crop, the matcher peak (orange crosshair), and the Decision Encoder's live action probability distribution._
+</div>
 
 ---
 
