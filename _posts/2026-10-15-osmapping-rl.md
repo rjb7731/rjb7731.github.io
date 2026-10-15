@@ -1,12 +1,10 @@
 ---
 layout: post
-title: "Geolocating Planning documents with Agents and Reinforcement Learning"
+title: "Beyond Static Embeddings: Training a 6,000-Parameter RL Agent to Actively Hunt Down Historical Planning Maps"
 date: 2026-10-15 18:10:00
 description: "Matching planning documents to the entirety of Greater Manchester using tiny models and reinforcemment learning"
 tags: machine-learning computer-vision mapping sovereign-ai reinforcement-learning
 ---
-
-# Beyond Static Embeddings: Training a 6,000-Parameter RL Agent to Actively Hunt Down Historical Planning Maps
 
 **Created on October 15, 2026**
 `2026` · `reinforcement-learning` · `markov-decision-processes` · `computer-vision` · `sovereign-ai`
@@ -69,15 +67,6 @@ At each step (up to a budget of 16 looks), the agent views a local crop of the m
 - **Investigate Rivals:** The environment keeps a short-term memory of the top 3 distinct match locations seen so far. Picking `check_0`, `check_1`, or `check_2` jumps straight to that candidate at the finest zoom level to verify it.
 - **Gather Clues & Test Hypotheses:** `read_street` runs OCR on the plan to unlock street jump candidates (`jump_0..2`), while `switch_scale` flips the agent's scale hypothesis between `1:1250` and `1:2500` (since 25% of plans have misread or missing scale text).
 - **Terminal Actions (`commit` vs. `escalate`):** Committing runs a sub-pixel registration and checks if the plan's red boundary polygon overlaps the true Land Registry plot ($\text{IoU} \ge 0.5$). Escalating stops the search and flags the document for human review.
-
-### Encoding Operational Economics in the Reward Function
-
-Why use RL instead of a simple threshold? Because business workflows have asymmetric costs:
-
-- **Each step/look (`-0.02`):** Compute and latency budget. Looking at 50 windows is expensive.
-- **Correct commit (`+1.0`):** Automated throughput.
-- **Wrong commit (`-1.0`):** A false positive in a statutory register is a costly failure.
-- **Escalate (`-0.35`):** Passing a tough document to a human costs time, but is far preferable to recording a wrong location.
 
 ---
 
