@@ -6,6 +6,15 @@ description: How I trained a tiny model to teach itself to pass the Year 1 phoni
 tags: [reinforcement-learning, world-models, learning-from-experience]
 ---
 
+<style>
+  #markdown-content h2, .post-content h2 { margin-top: 3.25rem; margin-bottom: 1rem; }
+  #markdown-content h3, .post-content h3 { margin-top: 2.25rem; margin-bottom: 0.75rem; }
+  #markdown-content table, .post-content table { margin-top: 1rem; margin-bottom: 1.75rem; }
+  #markdown-content ul, .post-content ul { margin-bottom: 1.5rem; }
+  #markdown-content blockquote, .post-content blockquote { margin: 1.5rem 0; }
+  #markdown-content details summary, .post-content details summary { cursor: pointer; color: var(--global-theme-color, #2a78d6); }
+</style>
+
 Code coming soon :)
 
 <div class="row align-items-center mt-3">
@@ -19,9 +28,11 @@ Code coming soon :)
   <source src="{{ 'assets/audio/how_is_it_going.wav' | relative_url }}" type="audio/wav">
 </audio>
 <p class="mt-2 mb-1"><small>It has never seen these words. It sounds them out with the phonics it learned, so "is" comes out with an s, and it spots the "oi" inside "going", just like a child who has just learned "oi" as in coin.</small></p>
-<p class="mb-0 text-muted"><small>It does sound a bit creepy, but you would too if you did not have vocal cords ha! I am reminded a little bit of Rocky from Project Hail Mary "Amaze! Amaze! Amaze!"</small></p>
+<p class="mb-0 text-muted"><small>It does sound a bit creepy, but you would too if you didn't have vocal cords ha! I am reminded a little bit of Rocky from Project Hail Mary "Amaze! Amaze! Amaze!"</small></p>
 </div>
 </div>
+
+<div class="pb-4"></div>
 
 ## Where this started
 
@@ -92,67 +103,37 @@ The model only ever receives pixels and audio. Sounds never arrive as labels.
 
 The model is two small networks: a **brain** of about 2M parameters and a **voice** of about 2.2M, under 10 MB together.
 
+<div class="row justify-content-center">
+<div class="col-12 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/architecture.png" title="How the parrot reads and learns" class="img-fluid rounded z-depth-1" %}
+</div>
+</div>
+<div class="caption text-center">
+    Figure 2: how the model reads (solid arrows) and the four ways its reading head learns (dotted arrows). The pink path is the sounding-out loop: it commits to real sounds, says them in its own voice, and hears itself.
+</div>
+
+<details class="mb-4" markdown="1">
+<summary>The layers in more detail</summary>
+
 ```text
-                              THE BRAIN (d = 128)
-page
- ├─ pictures ─► Scene encoder: CNN → 220 patch tokens → 2-layer transformer
- └─ print ────► Print encoder: CNN keeping 4-px columns → 80 tokens → 2-layer transformer
-                  │
-                  ├─► Reading head: per-column classifier, CTC → a sound sequence /f r ɒ g/
-                  │        │  (discrete: it must commit to real sounds)
-                  │        ▼
-                  │   THE VOICE says it → spectrogram → the model hears itself
-                  │        ▼
-                  │   Ear: 1-D convs (40 ms steps) → 2-layer transformer → "which thing was that?"
-                  │        ▼
-                  │   points at a picture
-                  │
-                  └─► Sight-word route: attention over the print → points at a picture too
+THE BRAIN (d = 128, ~2M parameters)
+  pictures ─► Scene encoder: 5-layer CNN → 220 patch tokens → 2-layer transformer
+  print ────► Print encoder: CNN keeping 4-px columns → 80 column tokens → 2-layer transformer
+                ├─► Reading head: per-column classifier over 44 classes (42 sounds, pause, blank), CTC
+                │     → a sound sequence /f r ɒ g/ → THE VOICE → spectrogram
+                │     → Ear: two strided 1-D convs (40 ms steps) → 2-layer transformer → attention pool
+                │     → query · picture patches → points at a picture
+                └─► Sight-word route: attention pool over the print columns → query · patches → points too
+  Namer: picture features → its spoken name (GRU)
+  Echo:  ear frames → which of its own sounds made them (CTC), learned from babbling
 
- Namer: picture → its spoken name (GRU)        Echo: what I heard → which of my sounds made it
-
-                              THE VOICE (d = 192)
-sounds + whose voice → 3-layer transformer → how long each sound lasts → conv + 2-layer transformer
-                     → 64-band spectrogram (10 ms frames) → Griffin-Lim → audio, for our ears
+THE VOICE (d = 192, ~2.2M parameters)
+  sounds + whose voice → 3-layer transformer encoder → duration predictor (alignment learned by
+  monotonic alignment search) → repeat each sound for its frames → 3 conv blocks + 2-layer transformer
+  → 64-band log-mel spectrogram, 10 ms frames → Griffin-Lim → audio (only for our ears)
 ```
 
-```mermaid
-flowchart TB
-    subgraph BRAIN["THE BRAIN (d = 128)"]
-        direction TB
-        Page["Page Input"]
-
-        %% Encoders
-        Page -->|"pictures"| SceneEnc["Scene Encoder<br/>CNN → 220 patch tokens → 2-layer Transformer"]
-        Page -->|"print"| PrintEnc["Print Encoder<br/>CNN (4-px columns) → 80 tokens → 2-layer Transformer"]
-
-        %% Dual Routes
-        PrintEnc -->|"Sight-word route"| SightRoute["Attention over print"]
-        SightRoute --> TargetPic["Points at picture"]
-
-        PrintEnc -->|"Reading head"| CTC["Per-column classifier (CTC)<br/>→ /f r ɒ g/"]
-
-        %% Loop through voice & ear
-        CTC ==>|"Discrete sounds"| VoiceStep["THE VOICE speaks it<br/>→ Spectrogram"]
-        VoiceStep --> Ear["The Ear<br/>1-D convs (40ms) → 2-layer Transformer"]
-        Ear --> TargetPic
-
-        %% Auxiliary models
-        Namer["Namer (GRU)<br/>picture → spoken name"] ~~~ Echo["Echo<br/>heard sound → mouth motor sounds"]
-    end
-
-    subgraph VOICE["THE VOICE (d = 192)"]
-        direction TB
-        VoiceIn["Sounds + Speaker Voice"] --> TransVoice["3-layer Transformer"]
-        TransVoice --> Duration["Duration Predictor"]
-        Duration --> ConvVoice["Conv + 2-layer Transformer"]
-        ConvVoice --> Spec["64-band Spectrogram (10ms frames)"]
-        Spec --> GriffinLim["Griffin-Lim"]
-        GriffinLim --> AudioOut["Audio (for human listener)"]
-    end
-
-    VoiceStep -.->|"executes"| VOICE
-```
+</details>
 
 A few design choices matter more than the rest:
 
@@ -266,7 +247,7 @@ This is the number I care about most for what comes next. During training I kept
 </div>
 </div>
 <div class="caption text-center">
-    Figure 2: the phonics check score against how many times the model had heard the teacher read aloud. It passes the 32/40 mark after 60,000 readings.
+    Figure 3: the phonics check score against how many times the model had heard the teacher read aloud. It passes the 32/40 mark after 60,000 readings.
 </div>
 
 It passed after hearing the teacher read aloud **60,000 times**. For the first 24,000 the score sits at zero: those lessons are mostly letter cards, learning single sounds, and the check needs whole words. Then it climbs steeply, passes at 60,000, and plateaus at around 36/40 by 84,000. The remaining 60,000 readings in the phonics stage added about one mark, and reading practice afterwards added a little more on top (37.3/40 on the curve's papers), mostly helping it point at pictures and read the tricky words rather than the check itself. 60,000 is the baseline I now want to drive down.
