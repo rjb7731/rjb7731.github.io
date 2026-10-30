@@ -16,7 +16,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/blog/";
           },
-        },{id: "post-beyond-static-embeddings-training-a-6-000-parameter-rl-agent-to-actively-hunt-down-historical-planning-maps",
+        },{id: "post-teaching-a-tiny-model-to-read-like-a-child-and-sit-the-year-1-phonics-check",
+        
+          title: "Teaching a Tiny Model to Read Like a Child, and Sit the Year...",
+        
+        description: "How I trained a tiny model to teach itself to pass the Year 1 phonics check with no labels, no answer key",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/learning-from-scratch/";
+          
+        },
+      },{id: "post-beyond-static-embeddings-training-a-6-000-parameter-rl-agent-to-actively-hunt-down-historical-planning-maps",
         
           title: "Beyond Static Embeddings: Training a 6,000-Parameter RL Agent to Actively Hunt Down Historical...",
         
