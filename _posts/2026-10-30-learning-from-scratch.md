@@ -104,12 +104,12 @@ The model only ever receives pixels and audio. Sounds never arrive as labels.
 The model is two small networks: a **brain** of about 2M parameters and a **voice** of about 2.2M, under 10 MB together.
 
 <div class="row justify-content-center">
-<div class="col-12 mt-3 mt-md-0">
+<div class="col-sm-10 col-md-6 mt-3 mt-md-0">
         {% include figure.liquid path="assets/img/architecture.png" title="How the parrot reads and learns" class="img-fluid rounded z-depth-1" %}
 </div>
 </div>
 <div class="caption text-center">
-    Figure 2: how the model reads (solid arrows) and the four ways its reading head learns (dotted arrows). The pink path is the sounding-out loop: it commits to real sounds, says them in its own voice, and hears itself.
+    Figure 2: how the model reads, top to bottom. The pink path is the sounding-out loop: it commits to real sounds, says them in its own voice, and hears itself. The dotted arrows are the two reinforcement learning rewards that train the reading head. Not shown: a sight-word route straight from the print to the picture, and the small helpers used for self-teaching.
 </div>
 
 <details class="mb-4" markdown="1">
