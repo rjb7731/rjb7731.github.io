@@ -25,22 +25,22 @@ sounds + whose voice → 3-layer transformer → how long each sound lasts → c
     subgraph BRAIN["THE BRAIN (d = 128)"]
         direction TB
         Page["Page Input"]
-        
+
         %% Encoders
         Page --&gt;|"pictures"| SceneEnc["Scene Encoder&lt;br/&gt;CNN → 220 patch tokens → 2-layer Transformer"]
         Page --&gt;|"print"| PrintEnc["Print Encoder&lt;br/&gt;CNN (4-px columns) → 80 tokens → 2-layer Transformer"]
-        
+
         %% Dual Routes
         PrintEnc --&gt;|"Sight-word route"| SightRoute["Attention over print"]
         SightRoute --&gt; TargetPic["Points at picture"]
-        
+
         PrintEnc --&gt;|"Reading head"| CTC["Per-column classifier (CTC)&lt;br/&gt;→ /f r ɒ g/"]
-        
+
         %% Loop through voice &amp; ear
         CTC ==&gt;|"Discrete sounds"| VoiceStep["THE VOICE speaks it&lt;br/&gt;→ Spectrogram"]
         VoiceStep --&gt; Ear["The Ear&lt;br/&gt;1-D convs (40ms) → 2-layer Transformer"]
         Ear --&gt; TargetPic
-        
+
         %% Auxiliary models
         Namer["Namer (GRU)&lt;br/&gt;picture → spoken name"] ~~~ Echo["Echo&lt;br/&gt;heard sound → mouth motor sounds"]
     end
