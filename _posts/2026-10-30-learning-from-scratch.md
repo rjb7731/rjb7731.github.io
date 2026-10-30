@@ -6,8 +6,6 @@ description: How I trained a tiny model to teach itself to pass the Year 1 phoni
 tags: [reinforcement-learning, world-models, learning-from-experience]
 ---
 
-# Teaching a Tiny Model to Read Like a Child, and Sit the Year 1 Phonics Check
-
 Code coming soon :)
 
 <div class="row align-items-center mt-3">
@@ -20,11 +18,9 @@ Code coming soon :)
 <audio controls preload="none" style="width:100%">
   <source src="{{ 'assets/audio/how_is_it_going.wav' | relative_url }}" type="audio/wav">
 </audio>
-<p class="mt-2 mb-0"><small>It has never seen these words. It sounds them out with the phonics it learned, so "is" comes out with an s, and it spots the "oi" inside "going", just like a child who has just learned "oi" as in coin.</small></p>
+<p class="mt-2 mb-1"><small>It has never seen these words. It sounds them out with the phonics it learned, so "is" comes out with an s, and it spots the "oi" inside "going", just like a child who has just learned "oi" as in coin.</small></p>
+<p class="mb-0 text-muted"><small>It does sound a bit creepy, but you would too if you did not have vocal cords ha! I am reminded a little bit of Rocky from Project Hail Mary "Amaze! Amaze! Amaze!"</small></p>
 </div>
-</div>
-<div class="caption text-center">
-    Sounds a bit creepy, but you would too if you did not have vocal cords. It does remind me a bit of Rocky from Project Hail Mary ha!
 </div>
 
 ## Where this started
