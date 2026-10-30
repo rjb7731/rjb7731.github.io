@@ -8,7 +8,7 @@ tags: [reinforcement-learning, world-models, learning-from-experience]
 
 # Teaching a Tiny Model to Read Like a Child, and Sit the Year 1 Phonics Check
 
-Code coming soon :) 
+Code coming soon :)
 
 <div class="row align-items-center mt-3">
 <div class="col-md-6 mb-3 mb-md-0">
@@ -27,16 +27,15 @@ Code coming soon :)
     Sounds a bit creepy, but you would too if you did not have vocal cords. It does remind me a bit of Rocky from Project Hail Mary ha!
 </div>
 
-
 ## Where this started
 
-I remember being in primary school and must have been around the age of five, the class I was in we were all collectively reading a banner of the alphabet that was hung up on the wall with the teachers direction.  We went through it from a to z, but saying each letter in the simplistic phonetic way to help us learn to read. We made the sounds: /æ/ for apple, /b/ for ball, /k/ for cat. Years later that memory got me thinking. We teach children that way as its the building blocks for being able to read. Could a small model learn to do the same thing, actually speaking the sound it is being taught, and then use those sounds to read words it has never seen before? And how much teaching would it need?
+I remember being in primary school and must have been around the age of five, the class I was in we were all collectively reading a banner of the alphabet that was hung up on the wall with the teachers direction. We went through it from a to z, but saying each letter in the simplistic phonetic way to help us learn to read. We made the sounds: /æ/ for apple, /b/ for ball, /k/ for cat. Years later that memory got me thinking. We teach children that way as its the building blocks for being able to read. Could a small model learn to do the same thing, actually speaking the sound it is being taught, and then use those sounds to read words it has never seen before? And how much teaching would it need?
 
 It turns out this idea is older than I am:
 
 > "Instead of trying to produce a programme to simulate the adult mind, why not rather try to produce one which simulates the child's? If this were then subjected to an appropriate course of education one would obtain the adult brain." - Alan Turing, "Computing Machinery and Intelligence" (1950)
 
-With that idea in mind, and inspired by David Silver's talk on a recent podcast, I set out to create a machine that can read and speak. I ended up calling the little model **the parrot**, putting it through a simplified version of a UK primary school reading education. It learns words by listening, learns to talk by copying, learns phonics by imitating a teacher reading aloud, and then teaches itself new words by reading picture books. The final exam is the same one every Year 1 child in England sits **the Phonics Screening Check**. Spoiler the model passes it. 
+With that idea in mind, and inspired by David Silver's talk on a recent podcast, I set out to create a machine that can read and speak. I ended up calling the little model **the parrot**, putting it through a simplified version of a UK primary school reading education. It learns words by listening, learns to talk by copying, learns phonics by imitating a teacher reading aloud, and then teaches itself new words by reading picture books. The final exam is the same one every Year 1 child in England sits **the Phonics Screening Check**. Spoiler the model passes it.
 
 ## Why bother?
 
@@ -59,10 +58,10 @@ That last step is the clever part. Another David called David Share called it th
 
 In England, every Year 1 child (age 5 to 6) sits the **Phonics Screening Check** each June. It is 40 words read aloud to a teacher:
 
-|  | Section 1 | Section 2 |
-| --- | --- | --- |
-| Alien words | 12 | 8 |
-| Real words | 8 | 12 |
+|             | Section 1                                                 | Section 2                                                                                              |
+| ----------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Alien words | 12                                                        | 8                                                                                                      |
+| Real words  | 8                                                         | 12                                                                                                     |
 | Code tested | Single letters, ch, sh, th, ng, ck, ar, ee, oi, oo, or... | Adds ph, wh, a-e, i-e, ay, ou, ie, ea, aw, ew, ir, ur..., longer clusters (str, spl) and two syllables |
 
 The alien words are made up ("blarsh", "quoag") and shown with a picture of an alien so children cannot rely on words they have just memorised. The pass mark is 32 out of 40. If the model can pass that, it can genuinely decode. We have a target to work towards.
@@ -126,22 +125,22 @@ flowchart TB
     subgraph BRAIN["THE BRAIN (d = 128)"]
         direction TB
         Page["Page Input"]
-        
+
         %% Encoders
         Page -->|"pictures"| SceneEnc["Scene Encoder<br/>CNN → 220 patch tokens → 2-layer Transformer"]
         Page -->|"print"| PrintEnc["Print Encoder<br/>CNN (4-px columns) → 80 tokens → 2-layer Transformer"]
-        
+
         %% Dual Routes
         PrintEnc -->|"Sight-word route"| SightRoute["Attention over print"]
         SightRoute --> TargetPic["Points at picture"]
-        
+
         PrintEnc -->|"Reading head"| CTC["Per-column classifier (CTC)<br/>→ /f r ɒ g/"]
-        
+
         %% Loop through voice & ear
         CTC ==>|"Discrete sounds"| VoiceStep["THE VOICE speaks it<br/>→ Spectrogram"]
         VoiceStep --> Ear["The Ear<br/>1-D convs (40ms) → 2-layer Transformer"]
         Ear --> TargetPic
-        
+
         %% Auxiliary models
         Namer["Namer (GRU)<br/>picture → spoken name"] ~~~ Echo["Echo<br/>heard sound → mouth motor sounds"]
     end
@@ -196,21 +195,21 @@ Most of what I learned came from things failing, and nearly every fix replaced s
 
 My first model learned a smaller world: 48 picture words and the early phonics code. Every test was on first sight, with no learning during the test.
 
-| Test | Result |
-| --- | --- |
-| Alien words it had never seen (blarsh, quoag), read exactly right | 91.3% |
-| A listener picks the right alien word from near-misses one sound away | 98.0% |
-| Words it had only ever heard, read aloud correctly the first time it saw them in print | 93.8% |
-| The supervisor understands its reading aloud (practised / tricky / never printed) | 96.5% / 98.0% / 85.3% |
+| Test                                                                                   | Result                |
+| -------------------------------------------------------------------------------------- | --------------------- |
+| Alien words it had never seen (blarsh, quoag), read exactly right                      | 91.3%                 |
+| A listener picks the right alien word from near-misses one sound away                  | 98.0%                 |
+| Words it had only ever heard, read aloud correctly the first time it saw them in print | 93.8%                 |
+| The supervisor understands its reading aloud (practised / tricky / never printed)      | 96.5% / 98.0% / 85.3% |
 
 Two checks convinced me it is really reading. With the caption removed, it points at the right picture 25.8% of the time, roughly chance with 3 to 5 pictures, showing it is not guessing from the artwork. Also, the sight route on its own reads familiar words at 91% but new words at 16%. Familiar words move to recognition on sight, while new words can only be sounded out. That two-route split is what reading research describes in people, and it appeared naturally.
 
 ### My favourite moment: it taught itself the tricky words
 
-| Page | After listening | After phonics | After reading practice |
-| --- | --- | --- | --- |
-| spot the bread | babble | /bræd/, wrong picture | /bred/, right picture |
-| spot the glove | babble | /glɒvə/, wrong picture | /glʌv/, right picture |
+| Page           | After listening | After phonics          | After reading practice |
+| -------------- | --------------- | ---------------------- | ---------------------- |
+| spot the bread | babble          | /bræd/, wrong picture  | /bred/, right picture  |
+| spot the glove | babble          | /glɒvə/, wrong picture | /glʌv/, right picture  |
 
 After phonics it read these the way a beginner does, strictly by the rules, and got them wrong. After reading practice it read them right. Nobody told it they were exceptions. /bræd/ matched no word it knew by ear, /bred/ did, and the bread was on the page. That is Share's self-teaching loop happening inside a model.
 
@@ -253,11 +252,11 @@ I sat the first model down for the check before teaching it the rest of the code
 
 So I grew a new model in a bigger world: all 120 words and the full Phase 2 to 5 code the check covers. Each paper is freshly generated to the official structure so it cannot be memorised, and marked like a teacher would: it only scores if it chose the right sounds **and** said them clearly enough to be heard as the right word.
 
-|  | Section 1 | Section 2 | Total | Passed |
-| --- | --- | --- | --- | --- |
-| First model (Phase 2-3) | 18.4/20 | 8.4/20 | 26.8/40 | 0 of 10 papers |
-| After phonics | 19.8/20 | 16.8/20 | **36.6/40** | **10 of 10 papers** |
-| After reading practice | 19.6/20 | 17.0/20 | **36.6/40** | **10 of 10 papers** |
+|                         | Section 1 | Section 2 | Total       | Passed              |
+| ----------------------- | --------- | --------- | ----------- | ------------------- |
+| First model (Phase 2-3) | 18.4/20   | 8.4/20    | 26.8/40     | 0 of 10 papers      |
+| After phonics           | 19.8/20   | 16.8/20   | **36.6/40** | **10 of 10 papers** |
+| After reading practice  | 19.6/20   | 17.0/20   | **36.6/40** | **10 of 10 papers** |
 
 It passed every one of the 10 papers. Its lowest paper was 34/40 and its best 38/40, which is about as high as it can realistically go: each paper has two real words with an alternative pronunciation (like "snow" or "head") that you can only get right if you already know the word, and the model has never heard them. Its voice never cost it a mark either: every word it chose the right sounds for was heard as the right word. The spellings it still slips on are y, the split digraph i-e and igh, which are the same ones that trip up a lot of children.
 
@@ -280,14 +279,14 @@ It passed after hearing the teacher read aloud **60,000 times**. For the first 2
 
 Every learning system starts with priors. AlphaZero was handed the rules of Go, and this model lives in a world I designed around English. Let's look at where that line actually is.
 
-|  | Learned from experience | Given to it |
-| --- | --- | --- |
-| Hearing | What words sound like, in any voice | None |
-| Phonics | Which letters make which sounds, by imitating the teacher | None |
-| Reading | Sounding out, sight words, the tricky words | None |
-| Speaking | What each of its sounds sounds like, how long it lasts, its own voice | 42 sound "slots" to choose between: it learned what each one sounds like, but not that English has 42. The voice also learned to talk from teacher recordings labelled with the sounds in them |
-| Hearing itself | None | During phonics it heard itself through a clear synthetic voice, then switched to its own |
-| Sound for us | None | Griffin-Lim, a fixed method that turns its spectrograms into audio for our ears. The model itself only ever hears spectrograms |
+|                | Learned from experience                                               | Given to it                                                                                                                                                                                    |
+| -------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hearing        | What words sound like, in any voice                                   | None                                                                                                                                                                                           |
+| Phonics        | Which letters make which sounds, by imitating the teacher             | None                                                                                                                                                                                           |
+| Reading        | Sounding out, sight words, the tricky words                           | None                                                                                                                                                                                           |
+| Speaking       | What each of its sounds sounds like, how long it lasts, its own voice | 42 sound "slots" to choose between: it learned what each one sounds like, but not that English has 42. The voice also learned to talk from teacher recordings labelled with the sounds in them |
+| Hearing itself | None                                                                  | During phonics it heard itself through a clear synthetic voice, then switched to its own                                                                                                       |
+| Sound for us   | None                                                                  | Griffin-Lim, a fixed method that turns its spectrograms into audio for our ears. The model itself only ever hears spectrograms                                                                 |
 
 The biggest given is the sound inventory. A baby discovers the sound categories of its language by listening in its first year, before any school. The model skips that. Babies are probably born expecting speech to be made of reusable units, but which units, and how many, is learned. Letting the model discover its own units is the obvious next frontier.
 
@@ -305,21 +304,20 @@ The part I am most excited about is efficiency. A child arrives at school alread
 
 Turing suggested building a child machine and educating it. Seventy-five years later, a few megabytes on a laptop can sit the same reading check as a six-year-old. And it passes, 36.6 out of 40. What I really want to know now is how close it can get to learning like one.
 
-
 ## Prior work
 
 Links still to add before posting.
 
-| Work | Why it matters here |
-| --- | --- |
-| Silver and Sutton (2025), "Welcome to the Era of Experience" | The framing: agents learning from their own experience, rewarded by consequences |
-| Silver, Singh, Precup and Sutton (2021), "Reward is Enough" | Rewards from the world (being understood, the right picture) instead of answer keys |
-| Sutton (2019), "The Bitter Lesson" | Why the hand-built voice box lost to a learned one |
-| Share (1995), the self-teaching hypothesis | The core idea: sounding out acts as a built-in teacher |
-| Coltheart et al. (2001), the dual-route cascaded model | Two routes, sounding out vs sight words, which the results reproduce |
-| Seidenberg and McClelland (1989), Plaut et al. (1996) | Earlier neural reading models, which learned spelling-to-sound from labels |
-| Kim et al. (2020), Glow-TTS; Siuzdak (2023), Vocos | The alignment trick behind the voice, and the vocoder design |
-| Letters and Sounds (DfE, 2007), Year 1 Phonics Screening Check | The UK phonics phases the words follow, and the alien-word test |
-| Turing (1950), "Computing Machinery and Intelligence" | The child machine: build a child's mind and educate it |
-| Ziegler, Perry and Zorzi (2014), Pritchard et al. (2018) | The closest predecessors: computational models of self-teaching, working on letters and sound symbols rather than pixels and audio |
-| Dehaene, "Reading in the Brain" (2009) | Neuronal recycling: reading repurposes visual cortex and wires it to spoken language |
+| Work                                                           | Why it matters here                                                                                                                |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Silver and Sutton (2025), "Welcome to the Era of Experience"   | The framing: agents learning from their own experience, rewarded by consequences                                                   |
+| Silver, Singh, Precup and Sutton (2021), "Reward is Enough"    | Rewards from the world (being understood, the right picture) instead of answer keys                                                |
+| Sutton (2019), "The Bitter Lesson"                             | Why the hand-built voice box lost to a learned one                                                                                 |
+| Share (1995), the self-teaching hypothesis                     | The core idea: sounding out acts as a built-in teacher                                                                             |
+| Coltheart et al. (2001), the dual-route cascaded model         | Two routes, sounding out vs sight words, which the results reproduce                                                               |
+| Seidenberg and McClelland (1989), Plaut et al. (1996)          | Earlier neural reading models, which learned spelling-to-sound from labels                                                         |
+| Kim et al. (2020), Glow-TTS; Siuzdak (2023), Vocos             | The alignment trick behind the voice, and the vocoder design                                                                       |
+| Letters and Sounds (DfE, 2007), Year 1 Phonics Screening Check | The UK phonics phases the words follow, and the alien-word test                                                                    |
+| Turing (1950), "Computing Machinery and Intelligence"          | The child machine: build a child's mind and educate it                                                                             |
+| Ziegler, Perry and Zorzi (2014), Pritchard et al. (2018)       | The closest predecessors: computational models of self-teaching, working on letters and sound symbols rather than pixels and audio |
+| Dehaene, "Reading in the Brain" (2009)                         | Neuronal recycling: reading repurposes visual cortex and wires it to spoken language                                               |

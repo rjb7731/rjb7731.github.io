@@ -27,7 +27,6 @@ _Why throw a huge LLM or brute-force grid search at a spatial business problem w
   </div>
 </div>
 
-
 Back in April, I wrote about training a 49-million-parameter contrastive ResNet50 model to geolocate planning documents across Greater Manchester. That approach treated map localization like a giant one-shot classification problem: chop Greater Manchester into 3,478 reference tiles, embed the document, run a matrix multiplication, and hope the nearest tile embedding is the right one.
 
 It worked well as a proof of concept, but as I dug deeper into real-world council archives and started following Sergey Levine’s Deep Reinforcement Learning course (CS285) at UC Berkeley, I realized that **one-shot static perception is the wrong abstraction for how real localization works**.
@@ -105,7 +104,6 @@ What happens if you skip Behavior Cloning and train REINFORCE from random weight
 In our experiments, a randomly initialized agent wanders around the map and makes random commits, losing `-1.0` eighty percent of the time (for an average starting return of `-0.66`). Within 50 iterations, **RL-from-scratch discovers a clever, degenerate local optimum**: if it simply presses `escalate` on Step 1 of every single episode, it collects a guaranteed `-0.35` reward with `0%` wrong commits! Once it collapses into 100% instant escalation, it never experiences a `+1.0` commit again.
 
 Warm-starting with Behavior Cloning (`SFT`) places the policy into the region of state space where it actually finds maps, and **REINFORCE (`SFT+RL`)** then refines its decision boundaries far beyond the expert it copied.
-
 
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
