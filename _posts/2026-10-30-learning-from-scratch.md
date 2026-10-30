@@ -27,7 +27,7 @@ Code coming soon :)
 <audio controls preload="none" style="width:100%">
   <source src="{{ 'assets/audio/how_is_it_going.wav' | relative_url }}" type="audio/wav">
 </audio>
-<p class="mt-2 mb-1"><small>It has never seen these words. It sounds them out with the phonics it learned, so "is" comes out with an s, and it spots the "oi" inside "going", just like a child who has just learned "oi" as in coin.</small></p>
+<p class="mt-2 mb-1"><small>It has never seen these words. It sounds them out with the phonics it learned and what it can see with its eyes, so "is" comes out with an s, and it spots the "oi" inside "going", just like a child who has just learned "oi" as in coin.</small></p>
 <p class="mb-0 text-muted"><small>It does sound a bit creepy, but you would too if you didn't have vocal cords ha! I am reminded a little bit of Rocky from Project Hail Mary "Amaze! Amaze! Amaze!"</small></p>
 </div>
 </div>
@@ -36,13 +36,13 @@ Code coming soon :)
 
 ## Where this started
 
-I remember being in primary school and must have been around the age of five, the class I was in we were all collectively reading a banner of the alphabet that was hung up on the wall with the teachers direction. We went through it from a to z, but saying each letter in the simplistic phonetic way to help us learn to read. We made the sounds: /æ/ for apple, /b/ for ball, /k/ for cat. Years later that memory got me thinking. We teach children that way as its the building blocks for being able to read. Could a small model learn to do the same thing, actually speaking the sound it is being taught, and then use those sounds to read words it has never seen before? And how much teaching would it need?
+I remember being in primary school and I must have been around the age of five, the class I was in we were all collectively reading a banner of the alphabet that was hung up on the wall with the teachers direction. We went through it from a to z, but saying each letter in the simplistic phonetic way to help us learn to read. We made the sounds: /æ/ for apple, /b/ for ball, /k/ for cat. Years later that memory got me thinking. We teach children that way as its the building blocks for being able to read. Could a small model learn to do the same thing, actually speaking the sound it is being taught, and then use those sounds to read words it has never seen before? And how much teaching would it need?
 
 It turns out this idea is older than I am:
 
 > "Instead of trying to produce a programme to simulate the adult mind, why not rather try to produce one which simulates the child's? If this were then subjected to an appropriate course of education one would obtain the adult brain." - Alan Turing, "Computing Machinery and Intelligence" (1950)
 
-With that idea in mind, and inspired by David Silver's talk on a recent podcast, I set out to create a machine that can read and speak. I ended up calling the little model **the parrot**, putting it through a simplified version of a UK primary school reading education. It learns words by listening, learns to talk by copying, learns phonics by imitating a teacher reading aloud, and then teaches itself new words by reading picture books. The final exam is the same one every Year 1 child in England sits **the Phonics Screening Check**. Spoiler the model passes it.
+With that idea in mind, and inspired by David Silver's talk on a recent podcast, I set out to create a machine that can read and speak. I ended up calling the little model **the parrot**, putting it through a simplified version of a UK primary school reading education. It learns words by listening, learns to talk by copying, learns phonics by imitating a teacher reading aloud, and then teaches itself new words by reading picture books. The final exam is the same one every Year 1 child in England sits **the Phonics Screening Check**. Spoiler but my model passes it :) 
 
 ## Why bother?
 
@@ -225,9 +225,9 @@ After phonics it read these the way a beginner does, strictly by the rules, and 
 
 ### The phonics check
 
-I sat the first model down for the check before teaching it the rest of the code. It scored **26.8/40** on average over 10 papers: 18.4/20 on section 1, which uses the code it had learned, but 8.4/20 on section 2, which it had never been taught. Not a pass.
+I sat an earlier version of model down for the test before teaching it the rest of the code. It scored **26.8/40** on average over 10 papers: 18.4/20 on section 1, which uses the code it had learned, but 8.4/20 on section 2, which it had never been taught. Not a pass.
 
-So I grew a new model in a bigger world: all 120 words and the full Phase 2 to 5 code the check covers. Each paper is freshly generated to the official structure so it cannot be memorised, and marked like a teacher would: it only scores if it chose the right sounds **and** said them clearly enough to be heard as the right word.
+So I 'grew' a new model in a bigger world which had all 120 words and the full Phase 2 to 5 code the check covers. Each paper is freshly generated to the official structure so it cannot be memorised, and it was marked like a teacher would do it. It only scores if it chose the right sounds **and** said them clearly enough to be heard as the right word.
 
 |                         | Section 1 | Section 2 | Total       | Passed              |
 | ----------------------- | --------- | --------- | ----------- | ------------------- |
@@ -235,7 +235,7 @@ So I grew a new model in a bigger world: all 120 words and the full Phase 2 to 5
 | After phonics           | 19.8/20   | 16.8/20   | **36.6/40** | **10 of 10 papers** |
 | After reading practice  | 19.6/20   | 17.0/20   | **36.6/40** | **10 of 10 papers** |
 
-It passed every one of the 10 papers. Its lowest paper was 34/40 and its best 38/40, which is about as high as it can realistically go: each paper has two real words with an alternative pronunciation (like "snow" or "head") that you can only get right if you already know the word, and the model has never heard them. Its voice never cost it a mark either: every word it chose the right sounds for was heard as the right word. The spellings it still slips on are y, the split digraph i-e and igh, which are the same ones that trip up a lot of children.
+It passed every one of the 10 papers. Its lowest paper was 34/40 and its best 38/40, which is about as high as it can realistically go. Each paper has two real words with an alternative pronunciation (like "snow" or "head") that you can only get right if you already know the word, and the model has never heard them. Its voice never marked it down, every word it chose the right sounds for was heard as the right word. The spellings it still slips on are y, the split digraph i-e and igh, which are the same ones that trip up a lot of children.
 
 ### How much teaching did it need?
 
@@ -279,7 +279,7 @@ The part I am most excited about is efficiency. A child arrives at school alread
 - **Discover its own sounds** from babbling and listening, instead of being handed 42 slots.
 - **Read a whole page,** moving its eyes across lines, and eventually a real decodable reading book.
 
-Turing suggested building a child machine and educating it. Seventy-five years later, a few megabytes on a laptop can sit the same reading check as a six-year-old. And it passes, 36.6 out of 40. What I really want to know now is how close it can get to learning like one.
+Turing suggested building a child machine and educating it. Seventy-five years later, a few megabytes on a laptop can sit the same reading check as a six-year-old. And it passes, 36.6 out of 40. 
 
 ## Prior work
 
