@@ -16,7 +16,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/blog/";
           },
-        },{id: "post-teaching-a-tiny-model-to-read-like-a-child-and-sit-the-year-1-phonics-check",
+        },{id: "post-the-generalisation-myth-in-enterprise-ai-and-why-your-models-don-39-t-need-to-be-massive",
+        
+          title: "The Generalisation Myth in Enterprise AI, and Why Your Models Don&#39;t Need to...",
+        
+        description: "Why in-context learning is not adaptation, why production models remain frozen, and why domain intelligence requires far fewer parameters than you think",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/the-myth-of-enterprise-ai/";
+          
+        },
+      },{id: "post-teaching-a-tiny-model-to-read-like-a-child-and-sit-the-year-1-phonics-check",
         
           title: "Teaching a Tiny Model to Read Like a Child, and Sit the Year...",
         
