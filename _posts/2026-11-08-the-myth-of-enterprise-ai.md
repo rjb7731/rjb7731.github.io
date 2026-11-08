@@ -39,7 +39,7 @@ External memory files are helpful for static references, like looking up an API 
 
 ## Engineered breakthroughs vs spontaneous magic
 
-Part of this confusion stems from the impressive breakthroughs we see from frontier labs. When models pull off remarkable feats in fields like fluid dynamics, 3D modeling, or higher mathematics, it is easy to assume the model taught itself through sheer generalized intelligence. From there, it is tempting to believe it will adapt to your business processes with that same effortless magic.
+Part of this confusion stems from the impressive breakthroughs we see from frontier labs. When models pull off remarkable feats in fields like fluid dynamics, 3D modeling, or higher mathematics, it is easy to assume the model taught itself through sheer generalised intelligence. From there, it is tempting to believe it will adapt to your business processes with that same effortless magic.
 
 In reality, those breakthroughs are not spontaneous. They are the direct result of months of deliberate engineering. Dedicated teams design custom reinforcement learning environments, build synthetic training pipelines, and actively update the model weights to instill those exact skills. The models advance because engineers specifically trained them to do so.
 
