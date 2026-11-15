@@ -19,7 +19,7 @@ Code coming soon :)
 
 <div class="row align-items-center mt-3">
 <div class="col-md-6 mb-3 mb-md-0">
-<img src="{{ 'assets/img/kitchen/rotating_drum_cooker.jpg' | relative_url }}" alt="Rotating Drum Cooker, generated from the model's claim" class="img-fluid rounded z-depth-1" style="width:100%;">
+<img src="{{ 'assets/img/rotating_drum_cooker.jpg' | relative_url }}" alt="Rotating Drum Cooker, generated from the model's claim" class="img-fluid rounded z-depth-1" style="width:100%;">
 </div>
 <div class="col-md-6">
 <p class="mb-1"><b>What it was given:</b> Kitchen Appliance for Processing Foodstuff and Method of Operating Same.</p>
@@ -232,7 +232,7 @@ A brewing device whose brew basket has an adjustable piston, so you can change t
 
 <div class="row justify-content-center">
 <div class="col-sm-12 col-md-10 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/kitchen/variable_chamber_brewer.jpg" title="Variable Chamber Brewer" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/variable_chamber_brewer.jpg" title="Variable Chamber Brewer" class="img-fluid rounded z-depth-1" %}
 </div>
 </div>
 <div class="caption text-center">
@@ -245,7 +245,7 @@ A cooker whose lid carries the control panel and a temperature probe that reache
 
 <div class="row justify-content-center">
 <div class="col-sm-12 col-md-10 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/kitchen/smart_lid_cooker.jpg" title="Smart-Lid Cooker" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/smart_lid_cooker.jpg" title="Smart-Lid Cooker" class="img-fluid rounded z-depth-1" %}
 </div>
 </div>
 <div class="caption text-center">
