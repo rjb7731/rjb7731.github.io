@@ -23,7 +23,7 @@ Code coming soon :)
 </div>
 <div class="col-md-6">
 <p class="mb-1"><b>What it was given:</b> Kitchen Appliance for Processing Foodstuff and Method of Operating Same.</p>
-<p class="mb-1"><b>What it wrote:</b> <i>This brewing device features a housing containing an infusion vessel with a brew basket fitted with an adjustable piston assembly to regulate the volume of brewing material. An internal pump and brewing control system dispense variable amounts of water into the vessel according to user-selected brewing parameters.</i></p>
+<p class="mb-1"><b>What it wrote:</b> <i>... the assembly comprising a removable drum that is rotatable within the pot to process the foodstuff contained within the pot....</i></p>
 <p class="mb-2"><b>What Gemini thought:</b> <i>Proven and practical, though nearly identical to existing rotating air fryers and drum roasters.”</i></p>
 <p class="mt-2 mb-0 text-muted"><small>The picture is an image model's take on the claim, a lid that wouldn't quite close and all.</small></p>
 </div>
