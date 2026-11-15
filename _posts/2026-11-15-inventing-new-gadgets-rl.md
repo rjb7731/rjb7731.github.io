@@ -167,7 +167,7 @@ That describes half the objects in a kitchen. It's always valid, easily lands in
 
 <div class="row justify-content-center">
 <div class="col-sm-12 col-md-10 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/patent_rl_reward_curbe.jpg" title="Learning curve" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/patent_rl_reward_curbe.png" title="Learning curve" class="img-fluid rounded z-depth-1" %}
 </div>
 </div>
 <div class="caption text-center">
