@@ -165,6 +165,15 @@ Then came the fun part. Goodhart's law says that when a measure becomes a target
 
 That describes half the objects in a kitchen. It's always valid, easily lands in the novelty band, and the verifier gave it 4.3, one of its higher scores. Closing loopholes with rules becomes whack-a-mole, so I stopped at 100 steps and measured whether any of this had actually helped.
 
+<div class="row justify-content-center">
+<div class="col-sm-12 col-md-10 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/patent_rl_reward_curbe.jpg" title="Learning curve" class="img-fluid rounded z-depth-1" %}
+</div>
+</div>
+<div class="caption text-center">
+    Figure 1: the reward over training steps and points with exploits.
+</div>
+
 ## Results
 
 RL roughly doubled the Gemini-judged quality per attempt, mostly by teaching the model to write one clean, finished claim. I gave the original drafter and two RL checkpoints the same 100 titles and had Gemini score every valid claim. Invalid attempts count as the minimum score of 1.
