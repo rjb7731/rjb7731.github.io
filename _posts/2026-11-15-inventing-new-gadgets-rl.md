@@ -78,7 +78,7 @@ The part of a patent I care about is **claim 1**, the legal definition of the in
 
 **How do you score novelty?** The trick I am happiest with is letting real inventions set the bar. Each patent becomes a vector using a small sentence model. I then measure how far each real 2016 to 2018 patent sits from its closest earlier patent. Most land between 0.23 and 0.52. That range becomes the **novelty band**: an idea only scores if it sits as far from the past as real new inventions do. Too close means it already exists. Too far usually means nonsense.
 
-## What workek - a tiny pretrained drafter
+## What worked - a tiny pretrained drafter
 
 So I tried a few ways before this went back to the original plan, a small pretrained language model. Qwen3-0.6B-Base has read plenty of patents during pretraining, so it already knows English, legal English, and roughly what a kettle is. I fine-tuned it with LoRA in MLX on the 6,096 training claims: a patent title in, its claim 1 out. It took 2,000 steps on my MacBook.
 
