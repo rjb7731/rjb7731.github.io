@@ -78,45 +78,9 @@ The part of a patent I care about is **claim 1**, the legal definition of the in
 
 **How do you score novelty?** The trick I am happiest with is letting real inventions set the bar. Each patent becomes a vector using a small sentence model. I then measure how far each real 2016 to 2018 patent sits from its closest earlier patent. Most land between 0.23 and 0.52. That range becomes the **novelty band**: an idea only scores if it sits as far from the past as real new inventions do. Too close means it already exists. Too far usually means nonsense.
 
-## Attempt one: a VQ-VAE, and a lot of word salad
+## What workek - a tiny pretrained drafter
 
-My first plan reused the VQ-VAE from my decision-letters project. It squeezes text into a few levels of discrete codes, coarse to fine. On my synthetic letters it rebuilt 98.4% of letters exactly, and the coarse codes held the gist. The idea was to do the same with claims, then sample new combinations of coarse codes to get new inventions.
-
-To check whether the codes captured the invention rather than the wording, I used two probes. Can the codes predict which kind of gadget a patent is (its CPC group: beverage makers, grills, cooking vessels…)? And can they predict the filing year, which would mean they had learned drafting style instead?
-
-| What the probe sees             | Gadget type (2016+ patents) | Filing year |
-| ------------------------------- | --------------------------- | ----------- |
-| Always guess the most common    | 35%                         | 39%         |
-| Full text, word counts (TF-IDF) | 71%                         | 53%         |
-| VQ-VAE, 4 coarse codes          | 46%                         | 40%         |
-
-The good news: the coarse codes had learned no drafting style at all. The bad news: they held only a third of what the plain text knew about the gadget. Decoding made the problem obvious. **"A vacuum electric kettle" came back as "a between tube provided".** The legal glue survived ("comprising", "a base for", "and a handle"), while the words that mattered vanished.
-
-Part of that was my own configuration mistake. I had shrunk the codebook to 256 codes for an 8,000-word vocabulary, so the model physically couldn't tell most words apart. Fixing it lifted reconstruction to 85%, but the coarse codes still only reached 47%, and "vacuum electric kettle" now became "transmission electric ring".
-
-The real problem was data. My letters used a 735-word vocabulary with endless examples. Real claims use thousands of words, and "kettle" might appear 50 times in 6,000 claims. **Six thousand examples can't teach a model a language from scratch.**
-
-The knowledge was sitting on the shelf, though. A frozen 22M-parameter sentence model (MiniLM), which has never seen a kitchen patent, predicted the gadget type at 68% from a single vector. BERT-mini at 11M got 61%. Small pretrained models already know what kettles are.
-
-## Attempt two: shuffling parts, and a teapot with a grill in it
-
-Next I gave the VQ-VAE that knowledge. Each claim became a list of parts ("kettle \| heating disc \| seal ring \| handle"), each part carrying its MiniLM vector. New ideas came from mixing codes between real patents: one patent's gist with another's parts.
-
-The first page of "inventions" was humbling. The top idea was _"A chip comprising: a carrier; a stage; a bonding apparatus; and a capillary"_, a semiconductor wire bonder that had been misfiled as kitchen equipment. Close behind was _"A cooking appliance comprising: a lower; an open position; a closed position; a baking chamber; … and a dough."_
-
-After cleaning the parts and scoring how distinctive each transplanted part was, it swung to the other extreme:
-
-- a teapot with a grilling chamber
-- a barbecue grill with an egg-yolk chamber
-- a sandwich comprising a solvent
-
-Then I added a baseline with no VQ-VAE at all: take a real recipe and swap in one part from a distant gadget. It took every top spot. The code space wasn't adding anything.
-
-The lesson stuck with me. **Statistics can tell you which words go together, but not whether a thing works.** Judging whether a grilling chamber makes sense in a teapot needs reasoning about what the gadget does, and that needs a model that can write and reason, not a codebook.
-
-## What worked: a tiny pretrained drafter
-
-So I went back to the original plan: a small pretrained language model. Qwen3-0.6B-Base has read plenty of patents during pretraining, so it already knows English, legal English, and roughly what a kettle is. I fine-tuned it with LoRA in MLX on the 6,096 training claims: a patent title in, its claim 1 out. It took 2,000 steps on my MacBook.
+So I tried a few ways before this went back to the original plan, a small pretrained language model. Qwen3-0.6B-Base has read plenty of patents during pretraining, so it already knows English, legal English, and roughly what a kettle is. I fine-tuned it with LoRA in MLX on the 6,096 training claims: a patent title in, its claim 1 out. It took 2,000 steps on my MacBook.
 
 The difference was immediate. Of the first 300 claims it wrote for titles it had seen during training:
 
@@ -160,7 +124,7 @@ Novelty was the hardest score to predict, because the verifier never sees the cl
 
 ## Reinforcement learning, and two attempts to cheat
 
-The RL is GRPO, the same family of method I used for the parrot and what powers models like Deepseek. Sadly US frontier labs are not open about the recipes they use. Each step:
+The RL is GRPO, the same family of method I used for my previous work on phonics and what powers models like Deepseek. Sadly US frontier labs are not open about the recipes they use. Each step:
 
 1. Pick two training titles. For each, the drafter writes a group of 8 claims.
 2. Score every claim: **valid × not a copy × inside the novelty band × verifier score / 10**.
@@ -256,6 +220,8 @@ A cooker whose lid carries the control panel and a temperature probe that reache
 
 A pot on a raised frame with a removable perforated drum inside, a lid, and a drain.
 
+(Image at the start)
+
 ## What it was given, and what it learned
 
 Like the parrot, this system starts with priors, and here they are much bigger. It's worth being clear about where the line sits.
@@ -271,7 +237,7 @@ The biggest given is Gemini's taste. Everything RL learned, it learned through a
 
 ## What's next
 
-The lesson I keep relearning is that capability follows the reward. The drafter got better exactly where the reward was sharp (writing valid, finished claims) and found loopholes where it was blurry. So the next step isn't more RL, it's a better verifier:
+The lesson I keep relearning is that capability follows the reward. The drafter got better exactly where the reward was sharp (writing valid, finished claims) and found loopholes where it was blurry. So the next step probably means a better verifier:
 
 - **Ask yes/no questions, not for a score.** "Rate usefulness 1 to 10" is fuzzy. "Does every part act on another part?", "Does the claim say what the new feature does?" and "Is the mechanism concrete or generic?" are easier to answer consistently, easier for a small model to learn, and much harder to game. Both exploits would have failed one of them.
 - **Compare pairs.** GRPO only needs to know which of 8 sibling claims is best, so ask Gemini "which of these two is better?" rather than for an absolute score.
@@ -281,11 +247,9 @@ The lesson I keep relearning is that capability follows the reward. The drafter 
 - **Narrow the world.** Beverage makers alone are about 30% of the data. A coffee-machine-only drafter with a coffee-specific rubric is a much smaller search space.
 - **Reward inventiveness directly,** then run the backtest on 2016 to 2018 titles.
 
-The first attempts couldn't write a sentence. Now a 0.6B model on a laptop writes patent claims that are 97% valid, are new by the patent record's own standard, and are judged twice as good as when it started. It isn't an inventor yet, but I now know exactly what it would take: a better reward.
+The first attempts couldn't write a sentence. Now a 0.6B model on a laptop writes patent claims that are 97% valid, are new by the patent record's own standard, and are judged twice as good as when it started. It isn't an inventor yet, but I now know exactly what it would take...a better reward.
 
 ## Prior work
-
-Links still to add before posting.
 
 | Work                                                                                             | Why it matters here                                                                              |
 | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
