@@ -16,7 +16,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/blog/";
           },
-        },{id: "post-the-generalisation-myth-in-enterprise-ai-and-why-your-models-don-39-t-need-to-be-massive",
+        },{id: "post-teaching-a-tiny-model-to-invent-kitchen-gadgets-on-a-laptop",
+        
+          title: "Teaching a Tiny Model to Invent Kitchen Gadgets on a Laptop",
+        
+        description: "How a 0.6B model on my MacBook learned to write new patent claims for kitchen gadgets, tried to cheat twice, and taught me that the reward matters more than the model",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/inventing-new-gadgets-rl/";
+          
+        },
+      },{id: "post-the-generalisation-myth-in-enterprise-ai-and-why-your-models-don-39-t-need-to-be-massive",
         
           title: "The Generalisation Myth in Enterprise AI, and Why Your Models Don&#39;t Need to...",
         
