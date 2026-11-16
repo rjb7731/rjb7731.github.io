@@ -35,6 +35,18 @@ This kitchen gadget doesn't exist. Its claim was written by a 0.6 billion parame
 
 After reinforcement learning, the quality of what it writes, as judged by Gemini, roughly doubled. Along the way it tried to cheat twice, and so far it never really became Edison in terms of inventions. This is the story of how it got there, what failed first, and why I now think the reward matters more than the model.
 
+### A personal invention favourite
+
+<div class="row justify-content-center">
+<div class="col-sm-12 col-md-10 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/cheese_cutter.jpg" title="Cheese cutter" class="img-fluid rounded z-depth-1" %}
+</div>
+</div>
+<div class="caption text-center">
+    Figure 1: an invention I have coined the 'Dairy Guillotine'
+</div>
+
+
 ## Where this started
 
 Most of my recent projects have had the same shape: a small model, a well-built environment, and a reward. The parrot learned to read and passed the Year 1 phonics check. A VQ-VAE learned to draft letters and was pushed by a checker. Another model learned to stop asking questions people had already answered. All of them ran on my laptop, where a rollout costs next to nothing.
