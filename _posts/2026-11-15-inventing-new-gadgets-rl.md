@@ -22,9 +22,11 @@ Code coming soon :)
 <img src="{{ 'assets/img/rotating_drum_cooker.jpg' | relative_url }}" alt="Rotating Drum Cooker, generated from the model's claim" class="img-fluid rounded z-depth-1" style="width:100%;">
 </div>
 <div class="col-md-6">
+
 <p class="mb-1"><b>What it was given:</b> Kitchen Appliance for Processing Foodstuff and Method of Operating Same.</p>
 <p class="mb-1"><b>What it wrote:</b> <i>... the assembly comprising a removable drum that is rotatable within the pot to process the foodstuff contained within the pot....</i></p>
-<p class="mb-2"><b>What Gemini thought:</b> <i>Proven and practical, though nearly identical to existing rotating air fryers and drum roasters.”</i></p>
+<p class="mb-2"><b>What Gemini thought:</b> <i>Proven and practical, though nearly identical to existing rotating air fryers and drum roasters.</i></p>
+<p class="mb-2"><b>Use cases:</b> <i>Rinsing rice, boiling and draining pasta or potatoes, frying chips so they cook evenly, roasting coffee beans</i></p>
 <p class="mt-2 mb-0 text-muted"><small>The picture is an image model's take on the claim, a lid that wouldn't quite close and all.</small></p>
 </div>
 </div>
