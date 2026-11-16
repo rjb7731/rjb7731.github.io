@@ -39,7 +39,7 @@ After reinforcement learning, the quality of what it writes, as judged by Gemini
 
 Most of my recent projects have had the same shape: a small model, a well-built environment, and a reward. The parrot learned to read and passed the Year 1 phonics check. A VQ-VAE learned to draft letters and was pushed by a checker. Another model learned to stop asking questions people had already answered. All of them ran on my laptop, where a rollout costs next to nothing.
 
-The idea of novelty is something I've been exploring alot about models that autonomaously produce things. Models give the average or safe bet from the internet rather than anything novel unless pushed. Reinforcement learning is playing a new part in LLMs to push them away from this curve of possible solutions to those areas which are more inventive.
+The idea of novelty is something I've been thinking about a lot with models that autonomously produce things with code, language or images. LLMs give the average or safe bet from the internet rather than anything novel unless pushed further either by users or training methods. Reinforcement learning is playing an increasingly string part of training pipelines to push sampling away from the peak of the curve of possible solutions to those areas which are much more inventive.
 
 So I asked myself a slightly cheeky question. If rollouts are this cheap with a model of 270M to 600M parameters, could you _discover_ something, rather than just get good at a task we already know the answer to?
 
